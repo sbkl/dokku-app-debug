@@ -1,0 +1,66 @@
+datasource db {
+  url      = env("DATABASE_URL")
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Venue {
+  id          String   @id @default(uuid())
+  name        String?
+  menus       Menu[]
+  description String?
+  currency    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+}
+
+model Menu {
+  id        String    @id @default(uuid())
+  venue     Venue     @relation(fields: [venueId], references: [id])
+  venueId   String
+  sections  Section[]
+  default   Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+}
+
+model Section {
+  id        String   @id @default(uuid())
+  name      String
+  menu      Menu     @relation(fields: [menuId], references: [id])
+  menuId    String
+  items     Item[]
+  sort      Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Item {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  price       Int
+  sort        Int
+  section     Section  @relation(fields: [sectionId], references: [id])
+  sectionId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+}
+
+model Image {
+  id            String   @id @default(uuid())
+  imageableType String
+  imageableId   String
+  name          String
+  mimetype      String
+  width         Int
+  height        Int
+  path          String
+  field         String?
+  sort          Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now())
+}
